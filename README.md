@@ -27,23 +27,24 @@ Exploring the sales and customer's data to answer business questions, such as:
  - Which products category are the top seller?
  - Did customers shop more online or visiting the physical store?
  - What is the most used payment method?
- - What is the top seller product catagory?
- - What are the peask sales period? 
+ - Who are the top spenders? (for promotional offers and outreach opportunity)
 
 ## Results/Findings
 Analysis results are summarized as follows:
-- We found that the youngest customer's age is 18, oldest customer's age is 70 and avergare of customers' age is 43.8 ~ 44 years old.
+- We found our customers are in the age between 18 and 70. However, the top spenders are in senior prod=fessional group and age between 30 and 44 years told.
 - Top spenders are in the senior profession group with the age group 
 - PayPal was the most poppular payment method in the pasrt year which means most purchases were occured online.
-- We found that products in Home category is the most popular and most purchased.
-
+- We found that clothing category products were the most popular and most sold.
+- We found 50 top spenders that made a purchase $5000 or above in the past year and we see an oppourtinity to retain these top spenders or customers by offering personalized promotional sales campaign and rewards programe. 
 
 
 ## Recomendation 
+
 Based on the analysis we recommed the following actions:
-- 
--
--
+
+1. We recommend on expand in clothing product category options. Since this categry is the top product sellers, we see oppoutunity to explor varioty of new clothing style or vendors.
+2. We recommend to lauch Cutomer Loyalty rewards program, creating rapport with top spender exisiting customers by offering personalized sales campaign and rewards programs. 
+3. Per our analysis, it is clear that most customers prefer online shopping more than traditional shopping at a physical store. We recommend to re-desgin the company's store website to be more robust and user-friendly, easy for customer to make online purchase.
 
 ## Data Analysis
 Using SQL to analyze data.
@@ -144,7 +145,7 @@ GROUP BY Product_Category
  ![Screenshot 2023-10-26 at 9 20 37 PM](https://github.com/iOSAppsWarrior/MySQL-Project-/assets/113806109/39aa2e86-e3f4-4d08-87aa-f642dc7e3a5c)
 
 
-### Question 6 : What is the most popular item? 
+### Question 6 : What is the product catagory that made higest sales amount?
 
 ```sql
 SELECT distinct Product_Category,SUM(Total_Purchase_Amount)AS Total_Purchase
@@ -154,14 +155,58 @@ ORDER BY SUM(Total_Purchase_Amount) DESC;
 ```
   ![Screenshot 2023-10-26 at 9 15 15 PM](https://github.com/iOSAppsWarrior/MySQL-Project-/assets/113806109/de4821aa-ea4e-4029-ae12-a4412036ae6f)
 
-### Question 7 : Checking summary of purchase in general (min, max and averagre pricing)
+### Question 7 : What product category is the top seller? 
+
+```sql
+SELECT Product_Category, Count(*)
+FROM cx
+GROUP BY Product_Category
+ORDER BY Count(*) DESC;
+```
+<img width="194" alt="Screenshot 2023-10-29 at 12 57 56 PM" src="https://github.com/iOSAppsWarrior/MySQL-Project-/assets/113806109/4d8671f9-a083-489a-867a-445a4ee2ab3a">
+
+
+### Question 8 : Checking summary of purchase in general (min, max and averagre pricing)
 ```sql
 SELECT MIN(Total_Purchase), MAX(Total_Purchase), AVG(Total_Purchase)
 FROM cx;
 ```
 
+### Question 9 : Find avergage sales and total sales amount per each year.
 
+```sql
+SELECT
+'2020' AS Year, AVG(Total_Purchase) AS AverageSales, SUM(Total_Purchase) AS 'Totalsales'
+FROM cx
+WHERE Purchase_Date LIKE '%2020%'
+UNION
+SELECT
+'2021' AS Year, AVG(Total_Purchase) AS AverageSales,SUM(Total_Purchase) AS 'Totalsales'
+FROM cx
+WHERE Purchase_Date LIKE '%2021%'
+UNION
+SELECT
+'2022' AS Year, AVG(Total_Purchase) AS AverageSales,SUM(Total_Purchase) AS 'Totalsales'
+FROM cx
+WHERE Purchase_Date LIKE '%2022%'
+UNION
+SELECT
+'2023' AS Year, AVG(Total_Purchase) AS AverageSales,SUM(Total_Purchase) AS 'Totalsales'
+FROM cx
+WHERE Purchase_Date LIKE '%2023%';
+```
+### Question 10: Find top 50 spenders.
 
-### Question 7 : When is the peask sales period? 
+```sql
+WITH CTE_Spenders AS (
+SELECT  Customer_ID, Customer_Name, MAX(Total_Purchase)
+FROM cx
+WHERE Purchase_Date Between '2022-01-01' AND '2022-12-31'
+GROUP BY Customer_ID, Customer_Name
+ORDER BY MAX(Total_Purchase) DESC
+LIMIT 50)
+SELECT * FROM CTE_Spenders;
+```
+<img width="342" alt="Screenshot 2023-10-29 at 1 21 30 PM" src="https://github.com/iOSAppsWarrior/MySQL-Project-/assets/113806109/67cc590e-49bb-44d6-839d-9431e7bd5f8f">
 
 
